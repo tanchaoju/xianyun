@@ -53,13 +53,9 @@ export default {
         //   验证失败则跳出函数
         if (!valid) return;
         // 发送登录请求
-        this.$axios({
-          method: "POST",
-          url: "/accounts/login",
-          data: this.form
-        }).then(res => {
-          console.log(res);
-          this.$store.commit("user/setuserInfo", res.data);
+        // console.log(this.$store.dispatch("user/login", this.form))
+        // this.$store.dispatch("user/login", this.form)返回的是一个promise
+        this.$store.dispatch("user/login", this.form).then(res => {
           this.$message.success("恭喜登陆成功");
           this.$router.replace("/");
         });
