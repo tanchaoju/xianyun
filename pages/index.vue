@@ -50,6 +50,7 @@ export default {
       ],
       searchValue:'',
       current: 0 // 当前选中的选项,默认为攻略
+  
     };
   },
   mounted() {
