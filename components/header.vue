@@ -23,7 +23,7 @@
           <el-row type="flex" align="middle" class="el-dropdown-link">
             <nuxt-link to="#">
               <img :src="$axios.defaults.baseURL+$store.state.user.userInfo.user.defaultAvatar" />
-              用户名
+             {{$store.state.user.userInfo.user.nickname}} 
             </nuxt-link>
             <i class="el-icon-caret-bottom el-icon--right"></i>
           </el-row>
@@ -45,7 +45,9 @@
 <script>
 export default {
   methods: {
-    handleLogout() {}
+    handleLogout() {
+      this.$store.commit('user/setuserInfo',{})
+    }
   }
 };
 </script>

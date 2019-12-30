@@ -21,5 +21,16 @@ export const actions={
             store.commit("setuserInfo", data);
           });
         
+    },
+    // 注册
+    register(store,data){
+        return this.$axios({
+            method: "POST",
+            url: "/accounts/register",
+            data: data 
+          }).then(res => {
+            const data=res.data
+            store.commit("setuserInfo", data);
+            })
     }
 }
