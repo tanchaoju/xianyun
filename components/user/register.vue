@@ -17,16 +17,19 @@
       <el-input placeholder="你的名字" v-model="form.nickname"></el-input>
     </el-form-item>
     <el-form-item class="form-item" prop="password">
-      <el-input type="password" placeholder="密码" v-model="form.password">
+      <el-input  :type="!eyestatu?'password':'text'" placeholder="密码" v-model="form.password">
         <template slot="append">
-          <i class="el-icon-view" @click="view"></i>
+          <i class="el-icon-view" @click="getView"></i>
         </template>
       </el-input>
     </el-form-item>
     <el-form-item class="form-item" prop="checkPass">
-      <el-input type="password" v-model="form.checkPass">
+      <el-input 
+      :type="!eyestatu?'password':'text'"
+      v-model="form.checkPass" 
+      placeholder="确认密码">
         <template slot="append">
-          <i class="el-icon-view" @click="view"></i>
+          <i class="el-icon-view"  @click="getViewAgain"></i>
         </template>
       </el-input>
     </el-form-item>
@@ -71,11 +74,6 @@ export default {
           {
             required: true,
             message: "请输入用户名",
-            trigger: "blur"
-          },
-          {
-            type: "number",
-            message: "请输入正确的手机号",
             trigger: "blur"
           }
         ],
@@ -138,7 +136,10 @@ export default {
         this.$message.error("用户名不符合");
       }
     },
-    view() {
+    getView() {
+      this.eyestatu = !this.eyestatu;
+    },
+    getViewAgain(){
       this.eyestatu = !this.eyestatu;
     },
     // 注册
