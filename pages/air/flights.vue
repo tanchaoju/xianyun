@@ -5,7 +5,7 @@
       <div class="flights-content">
         <!-- 过滤条件 -->
         <div>
-          <FlightsFilters />
+          <FlightsFilters :data="cacheFlightsData" @setDataList="setDataList" />
         </div>
 
         <!-- 航班头部布局 -->
@@ -46,11 +46,19 @@ import FlightsItem from "@/components/air/flightsItem.vue";
 export default {
   data() {
     return {
-      flightsData: {},
+      flightsData: {
+        info: {},
+        options: {}
+      },
+      // 缓存的变量，当该变量一旦被赋值之后不会被修改
+      cacheFlightsData: {
+        info: {},
+        options: {}
+      },
       pageSize: 5,
       pageIndex: 1,
-      total: 0,
-    //   dataList: [] // 存放每页数据
+      total: 0
+      //   dataList: [] // 存放每页数据
     };
   },
   components: {
@@ -76,7 +84,10 @@ export default {
       // this.$route.query获取url所带参数
       params: this.$route.query
     }).then(res => {
+      // 赋值给总数据，但是该变量中的flights在过滤时候会被修改
       this.flightsData = res.data;
+      // 这个是缓存的变量，一旦赋值之后不能被改
+      this.cacheFlightsData = { ...res.data };
       console.log(this.flightsData);
       this.total = this.flightsData.total;
       //   第一页数据（默认显示）
@@ -101,6 +112,13 @@ export default {
       //     (this.pageIndex - 1) * this.pageSize,
       //     this.pageIndex * this.pageSize
       //   );
+    },
+    // 给过滤的组件修改this.flightsData.flights
+    setDataList(arr) {
+      // arr 就是过滤后的符合条件的数据
+      this.flightsData.flights = arr;
+    //   修改总条数
+      this.total=arr.length
     }
   }
 };
