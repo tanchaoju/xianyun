@@ -155,7 +155,7 @@ export default {
     },
     handleDestSelect(item) {
       // 获取当前选中的城市代码
-      this.form.departCode = item.sort;
+      this.form.destCode = item.sort;
     },
     handleDestChange() {
       // 判断有下拉选项
