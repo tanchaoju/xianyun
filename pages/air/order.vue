@@ -2,7 +2,7 @@
     <div class="container">
         <el-row type="flex" justify="space-between">
             <!-- 订单表单 -->
-            <OrderForm/>
+            <OrderForm :data="infoData"/>
 
             <!-- 侧边栏 -->
             <div class="aside">
@@ -15,9 +15,27 @@
 <script>
 import OrderForm from "@/components/air/orderForm.vue";
 export default {
+     data(){
+        return {
+            infoData:{}
+        }
+    },
     components: {
         OrderForm
-    }
+    },
+   mounted(){
+    //    因orderform的数据最终还是需要在order中应用，所以将数据请求放在order中更优
+    //    获取id
+    const {id,seat_xid}=this.$route.query
+       this.$axios({
+           url:'/airs/'+id,
+           parmas:{
+               seat_xid
+           }
+       }).then(res=>{
+           this.infoData=res.data
+       })
+   }
 }
 </script>
 
