@@ -206,8 +206,9 @@ export default {
           path: "/air/flights",
           // 通过query来传递参数，使用此方法传递的参数会出现在url地址中
           query: this.form
-        });
+        });      
       });
+        this.$store.commit('air/setHistory',this.form)
     }
   }
 };

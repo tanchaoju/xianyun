@@ -34,6 +34,7 @@
       <!-- 侧边栏 -->
       <div class="aside">
         <!-- 侧边栏组件 -->
+        <FlightsAside />
       </div>
     </el-row>
   </section>
@@ -43,19 +44,21 @@
 import FlightsFilters from "@/components/air/flightsFilters.vue";
 import FlightsListHead from "@/components/air/flightsListHead.vue";
 import FlightsItem from "@/components/air/flightsItem.vue";
+import FlightsAside from "@/components/air/flightsAside.vue";
+
 export default {
   data() {
     return {
       flightsData: {
         info: {},
         options: {},
-        flights:[]
+        flights: []
       },
       // 缓存的变量，当该变量一旦被赋值之后不会被修改
       cacheFlightsData: {
         info: {},
         options: {},
-        flights:[]
+        flights: []
       },
       pageSize: 5,
       pageIndex: 1,
@@ -66,7 +69,8 @@ export default {
   components: {
     FlightsFilters,
     FlightsListHead,
-    FlightsItem
+    FlightsItem,
+    FlightsAside
   },
   computed: {
     // 利用计算属性监听dataList的值（由pageIndex与pageSize的变化带来的变化 ）的变化，来重新加载dataList
@@ -95,6 +99,23 @@ export default {
       //   this.dataList = this.flightsData.flights.slice(0, 5);
     });
   },
+  watch: {
+    $route() {
+      this.$axios({
+      url: "/airs",
+      // this.$route.query获取url所带参数
+      params: this.$route.query
+    }).then(res => {
+      // 赋值给总数据，但是该变量中的flights在过滤时候会被修改
+      this.flightsData = res.data;
+      // 这个是缓存的变量，一旦赋值之后不能被改
+      this.cacheFlightsData = { ...res.data };
+      this.total = this.flightsData.total;
+      //   第一页数据（默认显示）
+      //   this.dataList = this.flightsData.flights.slice(0, 5);
+    });
+    }
+  },
   methods: {
     //   切换条数时候触发事件
     handleSizeChange(val) {
@@ -118,8 +139,8 @@ export default {
     setDataList(arr) {
       // arr 就是过滤后的符合条件的数据
       this.flightsData.flights = arr;
-    //   修改总条数
-      this.total=arr.length
+      //   修改总条数
+      this.total = arr.length;
     }
   }
 };
