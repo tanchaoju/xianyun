@@ -40,7 +40,8 @@
     </h2>
 
     <!-- 特价机票 -->
-    <el-row type="flex" class="air-sale-pic" justify="space-between">
+    <div class="air-sale">
+      <el-row type="flex" class="air-sale-pic" justify="space-between">
       <el-col :span="6" v-for="(item, index) in sales" :key="index">
         <nuxt-link
           :to="`/air/flights?departCity=${item.departCity}&departCode=${item.departCode}&destCity=${item.destCity}&destCode=${item.destCode}&departDate=${item.departDate}`"
@@ -53,6 +54,7 @@
         </nuxt-link>
       </el-col>
     </el-row>
+    </div>
   </section>
 </template>
 
@@ -73,8 +75,6 @@ export default {
       url: "/airs/sale"
     }).then(res => {
       this.sales = res.data.data;
-      console.log(this.sales);
-      
     });
   },
   filters: {
@@ -198,4 +198,5 @@ export default {
     font-size: 20px;
   }
 }
+
 </style>

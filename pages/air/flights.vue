@@ -48,12 +48,14 @@ export default {
     return {
       flightsData: {
         info: {},
-        options: {}
+        options: {},
+        flights:[]
       },
       // 缓存的变量，当该变量一旦被赋值之后不会被修改
       cacheFlightsData: {
         info: {},
-        options: {}
+        options: {},
+        flights:[]
       },
       pageSize: 5,
       pageIndex: 1,
@@ -88,7 +90,6 @@ export default {
       this.flightsData = res.data;
       // 这个是缓存的变量，一旦赋值之后不能被改
       this.cacheFlightsData = { ...res.data };
-      console.log(this.flightsData);
       this.total = this.flightsData.total;
       //   第一页数据（默认显示）
       //   this.dataList = this.flightsData.flights.slice(0, 5);
