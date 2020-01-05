@@ -3,10 +3,7 @@
     <div class="air-column">
       <h2>乘机人</h2>
       <el-form class="member-info">
-        <div class="member-info-item" 
-        v-for="(item,index) in users" 
-        :key="index"
-        >
+        <div class="member-info-item" v-for="(item,index) in users" :key="index">
           <el-form-item label="乘机人类型">
             <el-input placeholder="姓名" class="input-with-select" v-model="item.username">
               <el-select slot="prepend" value="1" placeholder="请选择">
@@ -35,7 +32,11 @@
       <div>
         <!-- 循环渲染保险的数据 -->
         <div class="insurance-item" v-for="(item,index) in data.insurances" :key="index">
-          <el-checkbox :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`" border></el-checkbox>
+          <el-checkbox
+            :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`"
+            border
+            @change="handleInsurances(item.id)"
+          ></el-checkbox>
         </div>
       </div>
     </div>
@@ -45,11 +46,11 @@
       <div class="contact">
         <el-form label-width="60px">
           <el-form-item label="姓名">
-            <el-input></el-input>
+            <el-input v-model="contactName"></el-input>
           </el-form-item>
 
           <el-form-item label="手机">
-            <el-input placeholder="请输入内容">
+            <el-input placeholder="请输入内容" v-model="contactPhone">
               <template slot="append">
                 <el-button @click="handleSendCaptcha">发送验证码</el-button>
               </template>
@@ -57,7 +58,7 @@
           </el-form-item>
 
           <el-form-item label="验证码">
-            <el-input></el-input>
+            <el-input v-model="captcha"></el-input>
           </el-form-item>
         </el-form>
         <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
@@ -85,11 +86,13 @@ export default {
       air: "" // 航班的id
     };
   },
-  props:{
-      data:{
-          type:Object,
-          default(){return {}}
+  props: {
+    data: {
+      type: Object,
+      default() {
+        return {};
       }
+    }
   },
   methods: {
     // 添加乘机人
@@ -99,15 +102,63 @@ export default {
 
     // 移除乘机人
     handleDeleteUser(index) {
-        this.users.splice(index,1)
+      this.users.splice(index, 1);
+    },
+    // 获取保险数据
+    handleInsurances(id) {
+      // 判断是否存在，存在就删除，不存在就添加
+      if (this.insurances.indexOf(id) > -1) {
+        this.insurances.splice(this.insurances.indexOf(id), 1);
+      } else {
+        this.insurances.push(id);
+      }
     },
 
     // 发送手机验证码
-    handleSendCaptcha() {},
+    handleSendCaptcha() {
+      // 手机号码不能为空
+      if (!this.contactPhone) {
+        this.$message.error("手机号码不能为空");
+        return;
+      }
+      // 手机号码不能为空
+      if (/^1[3456789]\d{9}$/.test(this.contactPhone)) {
+        // 调用actions的发送手机验证码的接口
+        this.$store.dispatch("user/setCaptcha", this.contactPhone).then(res => {
+          this.$message.success("手机验证码发送成功：000000");
+        });
+      } else {
+        this.$message.error("请输入正确的手机号码");
+        return;
+      }
+    },
     // 提交订单
     handleSubmit() {
-        console.log(this.users);
-        
+      // 提交给创建订单接口的参数
+      const data = {
+        users: this.users,
+        insurances: this.insurances, // 保险id
+        contactName: this.contactName,
+        contactPhone: this.contactPhone,
+        captcha: this.captcha,
+        invoice: false,
+        seat_xid: this.$route.query.seat_xid, // 座位的id
+        air: this.$route.query.id // 航班的id
+      };
+
+      // 创建订单接口
+      this.$axios({
+        url: "/airorders",
+        method: "POST",
+        headers: {
+          // Bearer是token字符串前面必须要声明的，后面加上空格，再连接上token
+          Authorization: "Bearer " + this.$store.state.user.userInfo.token
+        },
+        data
+      }).then(res => {
+        this.$message(res.data.message);
+        console.log(this.insurances);
+      });
     }
   }
 };

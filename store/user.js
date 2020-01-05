@@ -32,5 +32,17 @@ export const actions={
             const data=res.data
             store.commit("setuserInfo", data);
             })
+    },
+    // 发送验证码
+    setCaptcha(store,data){
+        // 发送手机验证码请求
+        return this.$axios({
+            url: "/captchas",
+            method: 'POST',
+            data: {
+                // 手机号码
+                tel: data
+            }
+        })
     }
 }

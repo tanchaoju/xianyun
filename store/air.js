@@ -5,13 +5,10 @@ export const state=()=>({
 export const mutations={
     setHistory(sate,data){
         // 将数据追加到history
-      
+        if(data.length===0){
+            sate.history=data
+        }else{
             sate.history.push(data)
-        
-    }
-}
-export const actions={
-    clearHistory(sate,data){
-        sate.history=data
+        }
     }
 }

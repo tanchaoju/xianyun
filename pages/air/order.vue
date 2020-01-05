@@ -5,23 +5,26 @@
             <OrderForm :data="infoData"/>
 
             <!-- 侧边栏 -->
-            <div class="aside">
+             <OrderAside :data="infoData"/>
 
-            </div>
+          
         </el-row>
     </div>
 </template>
 
 <script>
 import OrderForm from "@/components/air/orderForm.vue";
+import OrderAside from "@/components/air/OrderAside.vue";
 export default {
      data(){
         return {
-            infoData:{}
+            infoData:{
+               airorders:{}
+            }
         }
     },
     components: {
-        OrderForm
+        OrderForm,OrderAside
     },
    mounted(){
     //    因orderform的数据最终还是需要在order中应用，所以将数据请求放在order中更优
@@ -34,6 +37,8 @@ export default {
            }
        }).then(res=>{
            this.infoData=res.data
+           console.log(res);
+           
        })
    }
 }

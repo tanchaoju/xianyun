@@ -42,9 +42,16 @@
 
 <script>
 export default {
+  props: {
+        // 父组件传递过来的对象
+        data: {
+            type: Object,
+            default: {}
+        }
+    },
   methods: {
     clearHistory() {
-     
+      this.$store.commit('air/setHistory',[])
     }
   }
 };
