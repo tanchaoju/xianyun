@@ -1,14 +1,18 @@
 export const state=()=>({
     // 搜索历史
-    history:[]
+    history:[],
+    totalPrice:0
 })
 export const mutations={
-    setHistory(sate,data){
+    setHistory(state,data){
         // 将数据追加到history
         if(data.length===0){
-            sate.history=data
+            state.history=data
         }else{
-            sate.history.push(data)
+            state.history.unshift(data)
         }
+    },
+    setTotalPrice(state,price){
+        state.totalPrice=price
     }
 }

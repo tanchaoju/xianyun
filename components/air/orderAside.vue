@@ -27,7 +27,7 @@
     </el-row>
     <el-row type="flex" justify="space-between" class="info-bar">
       <span>成人机票</span>
-      <span>￥{{data.airorders.price}}</span>
+      <span>￥{{data.seat_infos.org_settle_price}}</span>
       <span>x1</span>
     </el-row>
     <el-row type="flex" justify="space-between" class="info-bar">
@@ -37,7 +37,7 @@
     </el-row>
     <el-row type="flex" justify="space-between" align="middle" class="info-bar">
       <span>应付总额：</span>
-      <span class="price">￥ {{ $store.state.air.allPrice }}</span>
+      <span class="price">￥ {{ $store.state.air.totalPrice }}</span>
     </el-row>
   </div>
 </template>

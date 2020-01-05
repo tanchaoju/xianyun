@@ -64,6 +64,7 @@
         <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
       </div>
     </div>
+    <span>{{totalPrice}}</span>
   </div>
 </template>
 
@@ -92,6 +93,25 @@ export default {
       default() {
         return {};
       }
+    }
+  },
+  computed: {
+    // 计算总价格
+    totalPrice() {
+      let price=0
+      if(!this.data.seat_infos.org_settle_price) return
+      // 机票单价
+      price+=this.data.airorders.price
+      // 机建+燃油
+      price+=this.data.airport_tax_audlet
+      // 保险
+      price+= this.insurances.length * 30
+      // 总价
+      price*=this.users.length
+      // 调用setTotalPrice
+      this.$store.commit('air/setTotalPrice',price)
+      
+      return ""
     }
   },
   methods: {
@@ -157,7 +177,8 @@ export default {
         data
       }).then(res => {
         this.$message(res.data.message);
-        console.log(this.insurances);
+        console.log(this);
+        
       });
     }
   }

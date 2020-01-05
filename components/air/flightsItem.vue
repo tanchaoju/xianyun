@@ -99,6 +99,7 @@ export default {
     }
   },
   methods: {
+    // 选定
     handleLinkOrder(id, seat_xid) {
       this.$router.push({
          path: "/air/order",

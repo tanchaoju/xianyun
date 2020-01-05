@@ -19,7 +19,8 @@ export default {
      data(){
         return {
             infoData:{
-               airorders:{}
+               // 座位的列表
+                seat_infos: {}
             }
         }
     },
@@ -32,15 +33,14 @@ export default {
     const {id,seat_xid}=this.$route.query
        this.$axios({
            url:'/airs/'+id,
-           parmas:{
+           params:{
                seat_xid
            }
        }).then(res=>{
            this.infoData=res.data
-           console.log(res);
-           
        })
    }
+  
 }
 </script>
 
