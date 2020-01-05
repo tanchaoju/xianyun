@@ -57,7 +57,8 @@ export default {
         // this.$store.dispatch("user/login", this.form)返回的是一个promise
         this.$store.dispatch("user/login", this.form).then(res => {
           this.$message.success("恭喜登陆成功");
-          this.$router.replace("/");
+          //跳转回上一个页面
+          this.$router.back();
         });
       });
     }
