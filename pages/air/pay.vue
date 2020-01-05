@@ -36,21 +36,24 @@ export default {
     //  获取订单数据
     // 获取id
     const { id } = this.$route.query;
-    this.$axios({
-      url: "/airorders/" + id,
-      headers: {
-        // Bearer是token字符串前面必须要声明的，后面加上空格，再连接上token
-        Authorization: "Bearer " + this.$store.state.user.userInfo.token
-      }
-    }).then(res => {
-      console.log(res);
-      // 订单详情
-      this.orderData = res.data;
-      //   生成二维码
-      var msg = document.getElementById("qrcode-stage");
-      var val = this.orderData.payInfo.code_url;
-      QRCode.toCanvas(msg, val);
-    });
+    //  因发送请求需从本地拿取Authorization，而mounted在组件一加载就会执行，不能保证拿取Authorization更快，
+    //  为保证先拿取到Authorization，给发送请求添加一个定时器
+    setTimeout(() => {
+      this.$axios({
+        url: "/airorders/" + id,
+        headers: {
+          // Bearer是token字符串前面必须要声明的，后面加上空格，再连接上token
+          Authorization: "Bearer " + this.$store.state.user.userInfo.token
+        }
+      }).then(res => {
+        // 订单详情
+        this.orderData = res.data;
+        //   生成二维码
+        var msg = document.getElementById("qrcode-stage");
+        var val = this.orderData.payInfo.code_url;
+        QRCode.toCanvas(msg, val);
+      });
+    }, 1);
   }
 };
 </script>
