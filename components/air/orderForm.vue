@@ -177,7 +177,14 @@ export default {
         data
       }).then(res => {
         this.$message(res.data.message);
-        console.log(this);
+        // 跳转付款页面
+        const {id}=res.data.data
+        this.$router.push({
+          path:"/air/pay",
+          query:{
+            id
+          }
+        })
         
       });
     }
