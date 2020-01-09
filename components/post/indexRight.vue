@@ -1,73 +1,108 @@
 <template>
   <div class="indexRight">
     <div class="search">
-      <el-input placeholder="请输入想去的地方，比如：'广州'" suffix-icon="el-icon-search" v-model="city"></el-input>
+      <el-input
+        placeholder="请输入想去的地方，比如：'广州'"
+        suffix-icon="el-icon-search"
+        v-model="city"
+        ref="inputValue"
+      >{{$store.state.post.searchCity}}</el-input>
     </div>
     <div class="search-recommend">
       推荐：
-      <a href>广州</a>
-      <a href>上海</a>
-      <a href>北京</a>
+      <a
+        href="#"
+        v-for="(item,index) in ['广州','上海','北京']"
+        :key="index"
+        @click="handleClick(item)"
+      >{{item}}</a>
+      <!-- <a href="#" @click="handleClick(value)">广州</a> -->
+      <!-- <a href="#" @click="handleClick(value)">上海</a>
+      <a href="#" @click="handleClick(value)">北京</a>-->
     </div>
     <div class="strategy">
       <div class="strategy-header">
         <span>推荐攻略</span>
-        <el-button type="primary" icon="el-icon-edit">写游记</el-button>
+        <el-button type="primary" icon="el-icon-edit" @click="$router.push({path:'/post/create'})">写游记</el-button>
       </div>
       <!-- 文章列表 -->
-      <!-- 三张图渲染 -->
-      <div class="postList">
-        <h4 class="title">
-          <a href="#">文章标题</a>
-        </h4>
-        <p
-          class="content"
-        >文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容</p>
-        <div class="postImg">
-          <a href="#">
-            <img src="http://img3.imgtn.bdimg.com/it/u=2769810647,360229144&fm=26&gp=0.jpg" alt />
-          </a>
-          <a href="#">
-            <img src="http://img3.imgtn.bdimg.com/it/u=2769810647,360229144&fm=26&gp=0.jpg" alt />
-          </a>
-          <a href="#">
-            <img src="http://img3.imgtn.bdimg.com/it/u=2769810647,360229144&fm=26&gp=0.jpg" alt />
-          </a>
-        </div>
-        <div class="postFooter">
-          <div class="posterInfo">
-            <span class="city">北京市</span>by
-            <a href="#">
-              <span>地球发动机</span>
-            </a>
-            <span>12897</span>
-          </div>
-          <span>74 赞</span>
-        </div>
-      </div>
-      <!-- 1张图渲染 -->
-      <div class="postListOne">
-        <div class="postImg">
-          <a href="#">
-            <img src="http://img3.imgtn.bdimg.com/it/u=2769810647,360229144&fm=26&gp=0.jpg" alt />
-          </a>
-        </div>
-        <div>
+      <div v-for="(item,index) in $store.state.post.postData" :key="index">
+        <!-- 三张图渲染 -->
+        <div class="postList" v-if="item.images.length>=3">
           <h4 class="title">
-            <a href="#">文章标题</a>
+            <a href="#">{{item.title}}</a>
           </h4>
-          <p
-            class="content"
-          >文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容</p>
+          <p class="content">{{item.summary}}</p>
+          <div class="postImg">
+            <a href="#">
+              <img :src="item.images[0]" alt />
+            </a>
+            <a href="#">
+              <img :src="item.images[1]" alt />
+            </a>
+            <a href="#">
+              <img :src="item.images[2]" alt />
+            </a>
+          </div>
           <div class="postFooter">
             <div class="posterInfo">
-              <span class="city">北京市</span>by
-              <a href="#">
-                <span>地球发动机</span>
+              <span class="city">
+                <i class="el-icon-location-outline"></i>
+                {{item.cityName}}
+              </span>by
+              <a href="/user/personal">
+                <span>
+                  <img
+                    :src="$axios.defaults.baseURL+item.account.defaultAvatar"
+                    alt
+                    class="touXiang"
+                  />
+                  {{item.account.nickname}}
+                </span>
               </a>
-              <span>12897</span>
+              <span>
+                <i class="el-icon-view"></i>
+                {{item.watch}}
+              </span>
             </div>
-            <span>74 赞</span>
+            <span>{{item.like||0}} 赞</span>
+          </div>
+        </div>
+        <!-- 1张图渲染 -->
+        <div class="postListOne" v-else-if="item.images.length<3">
+          <div class="postImg">
+            <a href="#">
+              <img :src="item.images[0]" alt />
+            </a>
+          </div>
+          <div>
+            <h4 class="title">
+              <a href="#">{{item.title}}</a>
+            </h4>
+            <p class="content">{{item.summary}}</p>
+            <div class="postFooter">
+              <div class="posterInfo">
+                <span class="city">
+                  <i class="el-icon-location-outline"></i>
+                  {{item.cityName}}
+                </span>by
+                <a href="#">
+                  <span>
+                    <img
+                      :src="$axios.defaults.baseURL+item.account.defaultAvatar"
+                      alt
+                      class="touXiang"
+                    />
+                    {{item.account.nickname}}
+                  </span>
+                </a>
+                <span>
+                  <i class="el-icon-view"></i>
+                  {{item.watch}}
+                </span>
+              </div>
+              <span>{{item.like||0}} 赞</span>
+            </div>
           </div>
         </div>
       </div>
@@ -79,18 +114,33 @@
 export default {
   data() {
     return {
-      city: "",
-      postData:{}
+      city: ""
+      // postData: {}
     };
   },
   mounted() {
     this.$axios({
       url: "/posts"
     }).then(res => {
-      this.postData=res.data.data
-      console.log(this.postData);
-      
+      // this.postData = res.data.data;/
+      this.$store.commit("post/changePostData", res.data.data);
     });
+  },
+  methods: {
+    // 推荐城市点击触发事件
+    handleClick(item) {
+      // 根据推荐城市发送文章列表请求
+      this.$axios({
+        url: "/posts",
+        params: {
+          city: item
+        }
+      }).then(res => {
+        // 改变本地changePostData的值
+        this.$store.commit("post/changePostData", res.data.data);
+        this.$store.commit("post/changeSearchCity", item);
+      });
+    }
   }
 };
 </script>
@@ -216,5 +266,9 @@ export default {
 img {
   width: 220px;
   height: 150px;
+}
+.touXiang {
+  width: 16px;
+  height: 16px;
 }
 </style>

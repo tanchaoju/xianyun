@@ -7,7 +7,6 @@
         :key="index"
         @mouseenter="handleDsec(index)"
         @mouseleave="current=10"
-     
       >
         <span>
           {{item.type}}
@@ -18,8 +17,8 @@
             <li v-for="(item,index) in item.children" :key="index">
               <a href="#">
                 <i>{{index+1}}</i>
-                <strong>{{item.city}}</strong>
-                <span>{{item.desc}}</span>
+                <strong @click="handleStorong(item.city)">{{item.city}}</strong>
+                <span @click="handleStorong(item.city)">{{item.desc}}</span>
               </a>
             </li>
           </ul>
@@ -29,7 +28,7 @@
     <div class="aside-recommend">
       <h4>推荐城市</h4>
       <div>
-        <img src="http://img2.imgtn.bdimg.com/it/u=2402632179,4059605037&fm=26&gp=0.jpg" alt="">
+        <img src="http://img2.imgtn.bdimg.com/it/u=2402632179,4059605037&fm=26&gp=0.jpg" alt />
       </div>
     </div>
   </div>
@@ -58,6 +57,20 @@ export default {
   methods: {
     handleDsec(index) {
       this.current = index;
+    },
+    // 主题点击事件
+    handleStorong(value) {
+      // 根据推荐城市发送文章列表请求
+      this.$axios({
+        url: "/posts",
+       query: {
+          city: value
+        }
+      }).then(res => {
+        // 改变本地changePostData的值
+        this.$store.commit("post/changePostData", res.data.data);
+        this.$store.commit("post/changeSearchCity", value);
+      });
     }
   }
 };
@@ -98,7 +111,7 @@ export default {
       position: absolute;
       top: -1px;
       right: -337px;
-       z-index: 2;
+      z-index: 2;
       ul {
         li {
           cursor: pointer;
@@ -133,8 +146,8 @@ export default {
         }
       }
     }
-    &:nth-child(3){
-      .children{
+    &:nth-child(3) {
+      .children {
         right: -280px;
       }
     }
@@ -143,19 +156,18 @@ export default {
     color: orange;
   }
 }
-.aside-recommend{
+.aside-recommend {
   width: 260px;
-    padding-top: 20px;
-    h4{
-      padding-bottom: 10px;
-      font-weight: 400;
-      color:#000;
-      border-bottom: 1px solid #ddd;
-      margin-bottom: 10px;
-    }
-    img{
-      width: 260px;
-    }
-  
+  padding-top: 20px;
+  h4 {
+    padding-bottom: 10px;
+    font-weight: 400;
+    color: #000;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 10px;
+  }
+  img {
+    width: 260px;
+  }
 }
 </style>

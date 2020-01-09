@@ -2,15 +2,12 @@
   <div class="index">
     <el-row :gutter="20">
       <el-col :span="8">
-          <IndexLeft />
+        <IndexLeft />
       </el-col>
       <el-col :span="16">
         <IndexRight />
       </el-col>
-    
     </el-row>
-  
-   
   </div>
 </template>
 
@@ -26,7 +23,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.index{
+.index {
   // margin: 20px 260px;
   width: 1000px;
   margin: 0 auto;
