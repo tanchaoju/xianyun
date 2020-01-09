@@ -15,10 +15,10 @@
         <div class="children" v-if="current===index?true:false">
           <ul>
             <li v-for="(item,index) in item.children" :key="index">
-              <a href="#">
+              <a>
                 <i>{{index+1}}</i>
-                <strong @click="handleStorong(item.city)">{{item.city}}</strong>
-                <span @click="handleStorong(item.city)">{{item.desc}}</span>
+                <strong @click="$router.push(`/post?city=${item.city}`)">{{item.city}}</strong>
+                <span @click="$router.push(`/post?city=${item.city}`)">{{item.desc}}</span>
               </a>
             </li>
           </ul>

@@ -4,14 +4,13 @@
       <el-input
         placeholder="请输入想去的地方，比如：'广州'"
         suffix-icon="el-icon-search"
-        v-model="city"
+        v-model="searchCity"
         ref="inputValue"
-      >{{$store.state.post.searchCity}}</el-input>
+      ></el-input>
     </div>
     <div class="search-recommend">
       推荐：
       <a
-        href="#"
         v-for="(item,index) in ['广州','上海','北京']"
         :key="index"
         @click="handleClick(item)"
@@ -23,7 +22,11 @@
     <div class="strategy">
       <div class="strategy-header">
         <span>推荐攻略</span>
-        <el-button type="primary" icon="el-icon-edit" @click="$router.push({path:'/post/create'})">写游记</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-edit"
+          @click="$router.push({path:'/post/create'})"
+        >写游记</el-button>
       </div>
       <!-- 文章列表 -->
       <div v-for="(item,index) in $store.state.post.postData" :key="index">
@@ -114,7 +117,7 @@
 export default {
   data() {
     return {
-      city: ""
+      searchCity: ""
       // postData: {}
     };
   },
@@ -126,20 +129,31 @@ export default {
       this.$store.commit("post/changePostData", res.data.data);
     });
   },
+  watch:{
+    // 监听路由变化。当路由发送改变时，调用sendPostData函数，改变文章列表
+    $route(to,from){
+      var city=to.query.city
+     this.sendPostData(city)
+    }
+  },
   methods: {
-    // 推荐城市点击触发事件
-    handleClick(item) {
+    sendPostData(data) {
       // 根据推荐城市发送文章列表请求
       this.$axios({
         url: "/posts",
         params: {
-          city: item
+          city: data
         }
       }).then(res => {
         // 改变本地changePostData的值
         this.$store.commit("post/changePostData", res.data.data);
-        this.$store.commit("post/changeSearchCity", item);
+        this.$store.commit("post/changeSearchCity", data);
+        this.searchCity = this.$store.state.post.searchCity;
       });
+    },
+    // 推荐城市点击触发事件
+    handleClick(item) {
+      this.sendPostData(item);
     }
   }
 };
@@ -218,6 +232,9 @@ export default {
   .postImg {
     margin-right: 5px;
   }
+  .content {
+    height: 63px;
+  }
 }
 .title {
   margin-bottom: 15px;
@@ -236,6 +253,7 @@ export default {
   }
 }
 .content {
+  line-height: 21px;
   margin-bottom: 15px;
   color: #666;
   font-size: 14px;
