@@ -1,5 +1,6 @@
 <template>
   <div class="indexRight">
+    <!-- 搜索框 -->
     <div class="search">
       <el-input
         placeholder="请输入想去的地方，比如：'广州'"
@@ -8,6 +9,7 @@
         ref="inputValue"
       ></el-input>
     </div>
+    <!-- 搜索推荐 -->
     <div class="search-recommend">
       推荐：
       <a
@@ -19,7 +21,9 @@
       <!-- <a href="#" @click="handleClick(value)">上海</a>
       <a href="#" @click="handleClick(value)">北京</a>-->
     </div>
+    <!-- 文章列表部分 -->
     <div class="strategy">
+      <!-- 头部 -->
       <div class="strategy-header">
         <span>推荐攻略</span>
         <el-button
@@ -109,6 +113,18 @@
           </div>
         </div>
       </div>
+      <!-- 分页 -->
+      <div class="pagination">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="[3, 5, 7, 10]"
+          :page-size="3"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="40"
+        ></el-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -117,7 +133,8 @@
 export default {
   data() {
     return {
-      searchCity: ""
+      searchCity: "",
+      currentPage:1 //默认选中第一页
       // postData: {}
     };
   },
@@ -129,11 +146,11 @@ export default {
       this.$store.commit("post/changePostData", res.data.data);
     });
   },
-  watch:{
+  watch: {
     // 监听路由变化。当路由发送改变时，调用sendPostData函数，改变文章列表
-    $route(to,from){
-      var city=to.query.city
-     this.sendPostData(city)
+    $route(to, from) {
+      var city = to.query.city;
+      this.sendPostData(city);
     }
   },
   methods: {
@@ -154,6 +171,14 @@ export default {
     // 推荐城市点击触发事件
     handleClick(item) {
       this.sendPostData(item);
+    },
+    // 切换每页显示文章数量
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    // 切换页数
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
     }
   }
 };
@@ -288,5 +313,8 @@ img {
 .touXiang {
   width: 16px;
   height: 16px;
+}
+.pagination{
+  margin-top: 10px;
 }
 </style>

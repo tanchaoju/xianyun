@@ -50,7 +50,6 @@ export default {
       url: "/posts/cities"
     }).then(res => {
       this.cities = res.data.data;
-      console.log(this.cities);
       this.first.push(this.cities[0].children);
     });
   },
