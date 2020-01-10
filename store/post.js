@@ -1,7 +1,7 @@
 export const state=()=>({
      // 搜索城市
     searchCity:'',
-     // 城市列表
+     // 文章列表数据
     postData:{},
     // 草稿数据
     raftsPostData:[]

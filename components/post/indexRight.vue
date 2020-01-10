@@ -114,17 +114,16 @@
         </div>
       </div>
       <!-- 分页 -->
-      <div class="pagination">
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
           :page-sizes="[3, 5, 7, 10]"
-          :page-size="3"
+          :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="40"
+          :total="total"
         ></el-pagination>
-      </div>
+     
     </div>
   </div>
 </template>
@@ -134,17 +133,18 @@ export default {
   data() {
     return {
       searchCity: "",
-      currentPage:1 //默认选中第一页
+      currentPage: 1, //默认选中第1页
+      pageSize:3, //每页显示条数
+      total: 0, //文章总数量
+      start:0,
+      // limit:10000
       // postData: {}
     };
   },
   mounted() {
-    this.$axios({
-      url: "/posts"
-    }).then(res => {
-      // this.postData = res.data.data;/
-      this.$store.commit("post/changePostData", res.data.data);
-    });
+    // 获取文章列表数据
+    var data=this.$route.query.city
+    this.sendPostData(data);
   },
   watch: {
     // 监听路由变化。当路由发送改变时，调用sendPostData函数，改变文章列表
@@ -154,18 +154,25 @@ export default {
     }
   },
   methods: {
+    // 封装函数根据城市获取文章列表
     sendPostData(data) {
       // 根据推荐城市发送文章列表请求
       this.$axios({
         url: "/posts",
         params: {
-          city: data
+          city: data,
+          _start:this.start,
+          _limit:this.pageSize,
+          // _sort:3
         }
       }).then(res => {
         // 改变本地changePostData的值
+        console.log(res);
+        
         this.$store.commit("post/changePostData", res.data.data);
         this.$store.commit("post/changeSearchCity", data);
         this.searchCity = this.$store.state.post.searchCity;
+        this.total=res.data.total
       });
     },
     // 推荐城市点击触发事件
@@ -174,10 +181,17 @@ export default {
     },
     // 切换每页显示文章数量
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      this.pageSize=val
+      // 获取搜索城市
+      var data=this.$store.state.post.searchCity
+      this.sendPostData(data);
     },
     // 切换页数
     handleCurrentChange(val) {
+      this.start=(val-1)*this.pageSize
+       // 获取搜索城市
+      var data=this.$store.state.post.searchCity
+      this.sendPostData(data);
       console.log(`当前页: ${val}`);
     }
   }
@@ -314,7 +328,7 @@ img {
   width: 16px;
   height: 16px;
 }
-.pagination{
+.pagination {
   margin-top: 10px;
 }
 </style>
