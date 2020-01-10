@@ -20,12 +20,27 @@
       </div>
       <div class="publish">
         <el-button type="primary" @click="handlePublish">发布</el-button>
-        <el-button type="warning">存至草稿</el-button>
+        <el-button type="warning" @click="handledrafts">存至草稿</el-button>
       </div>
     </div>
     <!--右边草稿箱-->
     <div class="drafts">
-      <div>草稿箱</div>
+      <div>
+        <h2>草稿箱({{$store.state.post.raftsPostData.length}})</h2>
+        <div
+          class="draftsDetails"
+          v-for="(item,index) in $store.state.post.raftsPostData"
+          :key="index"
+        >
+          <h3>
+            <a @click="handleDrafts(item)">
+              {{item.title}}
+              <i class="el-icon-edit"></i>
+            </a>
+          </h3>
+          <span>{{item.date}}</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -122,9 +137,45 @@ export default {
           },
           data: data
         }).then(res => {
-         this.$message.success(res.data.message)
+          this.$message.success(res.data.message);
+          //  清空页面数据
+          this.title = "";
+          quill.root.innerHTML = "";
+          this.city = "";
         });
       }
+    },
+    // 存至草稿
+    handledrafts() {
+      // 获取富文本内容
+      var quill = this.$refs.vueEditor.editor;
+      // 获取当前时间
+      var shijian = new Date();
+      var nn = shijian.getFullYear();
+      var mm = shijian.getMonth() + 1;
+      var dd = shijian.getDate();
+      var hh = shijian.getHours();
+      var ff = shijian.getMinutes();
+      var ss = shijian.getSeconds();
+      var date = nn + "-" + mm + "-" + dd + "  " + hh + ":" + ff + ":" + ss;
+
+      var data = {
+        title: this.title,
+        content: quill.root.innerHTML, // 获取富文本内容
+        city: this.city,
+        date: date
+      };
+      this.$store.commit("post/sendRaftsPost", data);
+      console.log(this.$store.state.post.raftsPostData);
+    },
+    //点击草稿
+    handleDrafts(item) {
+      this.$router.push("/post/create");
+      this.title = item.title;
+      this.city = item.city;
+      // 获取富文本内容
+      var quill = this.$refs.vueEditor.editor;
+      quill.root.innerHTML = item.content;
     }
   }
 };
@@ -157,13 +208,35 @@ export default {
       height: 400px;
     }
   }
-  .drafts div {
-    width: 200px;
-    border: 1px solid #ddd;
-    padding: 10px;
-  }
   .searchCity {
     margin-top: 20px;
+  }
+}
+.drafts div {
+  width: 200px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  > h2 {
+    margin-bottom: 10px;
+    color: #666;
+    font-size: 16px;
+    font-weight: 400;
+  }
+  .draftsDetails {
+    width: 100%;
+    border: none;
+    h3 {
+      color: #000;
+      font-size: 14px;
+      font-weight: 400;
+      a:hover {
+        color: orange;
+      }
+    }
+    span {
+      color: #999;
+      font-size: 14px;
+    }
   }
 }
 </style>
